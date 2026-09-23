@@ -2,8 +2,6 @@ name: ZAERO Projekt entpacken
 
 on:
   push:
-    paths:
-      - "ZAERO-ZAF3-v5-komplett.zip"
   workflow_dispatch:
 
 permissions:
