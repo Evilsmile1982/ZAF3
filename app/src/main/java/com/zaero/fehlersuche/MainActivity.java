@@ -718,7 +718,7 @@ public class MainActivity extends Activity {
 
         Button errorsButton =
                 btn("Fehlersuche");
-
+    }
 
     EditText field(String hint,String val){EditText e=new EditText(this);e.setHint(hint);e.setText(val==null?"":val);e.setTextColor(TEXT);e.setHintTextColor(MUTED);e.setPadding(dp(10),dp(5),dp(10),dp(5));e.setBackground(round(PANEL,dp(8)));LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-1,dp(58));p.setMargins(0,dp(4),0,dp(4));e.setLayoutParams(p);return e;}
     void pickImage(ErrorItem e,View imageBox){Intent i=new Intent(Intent.ACTION_OPEN_DOCUMENT);i.setType("image/*");i.addCategory(Intent.CATEGORY_OPENABLE);startActivityForResult(i,1001);pending=e;pendingImageBox=imageBox;}
