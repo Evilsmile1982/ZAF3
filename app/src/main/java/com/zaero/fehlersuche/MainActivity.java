@@ -720,4 +720,19 @@ public class MainActivity extends Activity {
                 btn("Fehlersuche");
 
 
+    EditText field(String hint,String val){EditText e=new EditText(this);e.setHint(hint);e.setText(val==null?"":val);e.setTextColor(TEXT);e.setHintTextColor(MUTED);e.setPadding(dp(10),dp(5),dp(10),dp(5));e.setBackground(round(PANEL,dp(8)));LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-1,dp(58));p.setMargins(0,dp(4),0,dp(4));e.setLayoutParams(p);return e;}
+    void pickImage(ErrorItem e,View imageBox){Intent i=new Intent(Intent.ACTION_OPEN_DOCUMENT);i.setType("image/*");i.addCategory(Intent.CATEGORY_OPENABLE);startActivityForResult(i,1001);pending=e;pendingImageBox=imageBox;}
+    ErrorItem pending;View pendingImageBox;
+    void refreshImageButtons(ErrorItem e,LinearLayout box){box.removeAllViews(); if(e.images.isEmpty()){box.addView(tv("Keine Bilder",14));return;} for(String name:new ArrayList<>(e.images)){Button b=btn("🖼 "+name+"   ✕");box.addView(b);b.setOnClickListener(v->{File f=new File(getFilesDir(),name);if(f.exists())f.delete();e.images.remove(name);save();refreshImageButtons(e,box);});}}
+    @Override protected void onActivityResult(int r,int c,Intent data){super.onActivityResult(r,c,data);if(r==1001&&c==RESULT_OK&&data!=null&&data.getData()!=null&&pending!=null){Uri u=data.getData();try{String name="img_"+System.currentTimeMillis()+".jpg";File out=new File(getFilesDir(),name);InputStream in=getContentResolver().openInputStream(u);FileOutputStream fos=new FileOutputStream(out);byte[] buf=new byte[8192];int n;while((n=in.read(buf))>0)fos.write(buf,0,n);in.close();fos.close();pending.images.add(name);if(pendingImageBox instanceof LinearLayout)refreshImageButtons(pending,(LinearLayout)pendingImageBox);save();}catch(Exception ex){Toast.makeText(this,"Bild konnte nicht gespeichert werden",Toast.LENGTH_SHORT).show();}}}
+    void deleteImages(ErrorItem e){for(String n:e.images){File f=new File(getFilesDir(),n);if(f.exists())f.delete();}}
+    void save(){try{JSONArray a=new JSONArray();for(ErrorItem e:errors)a.put(e.toJson());getSharedPreferences(PREFS,0).edit().putString(KEY_ERRORS,a.toString()).apply();}catch(Exception ignored){}}
+    void load(){try{String s=getSharedPreferences(PREFS,0).getString(KEY_ERRORS,"[]");JSONArray a=new JSONArray(s);for(int i=0;i<a.length();i++)errors.add(ErrorItem.from(a.getJSONObject(i)));}catch(Exception ignored){}}
+    static class ErrorItem{
+        String title="",description="",cause="",solution="",area="Anfahren";ArrayList<String> images=new ArrayList<>();
+        boolean matches(String q){String z=(title+" "+description+" "+cause+" "+solution+" "+area).toLowerCase();return z.contains(q);}
+        JSONObject toJson()throws Exception{JSONObject o=new JSONObject();o.put("title",title);o.put("description",description);o.put("cause",cause);o.put("solution",solution);o.put("area",area);JSONArray a=new JSONArray();for(String s:images)a.put(s);o.put("images",a);return o;}
+        static ErrorItem from(JSONObject o)throws Exception{ErrorItem e=new ErrorItem();e.title=o.optString("title");e.description=o.optString("description");e.cause=o.optString("cause");e.solution=o.optString("solution");e.area=o.optString("area","Anfahren");JSONArray a=o.optJSONArray("images");if(a!=null)for(int i=0;i<a.length();i++)e.images.add(a.getString(i));return e;}
+       }
+       }
        
