@@ -105,5 +105,6 @@ public class MainActivity extends Activity {
         boolean matches(String q){String z=(title+" "+description+" "+cause+" "+solution+" "+area).toLowerCase();return z.contains(q);}
         JSONObject toJson()throws Exception{JSONObject o=new JSONObject();o.put("title",title);o.put("description",description);o.put("cause",cause);o.put("solution",solution);o.put("area",area);JSONArray a=new JSONArray();for(String s:images)a.put(s);o.put("images",a);return o;}
         static ErrorItem from(JSONObject o)throws Exception{ErrorItem e=new ErrorItem();e.title=o.optString("title");e.description=o.optString("description");e.cause=o.optString("cause");e.solution=o.optString("solution");e.area=o.optString("area","Anfahren");JSONArray a=o.optJSONArray("images");if(a!=null)for(int i=0;i<a.length();i++)e.images.add(a.getString(i));return e;}
-    }
-}
+       }
+       }
+       }
