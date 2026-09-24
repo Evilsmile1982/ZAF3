@@ -107,4 +107,4 @@ public class MainActivity extends Activity {
         static ErrorItem from(JSONObject o)throws Exception{ErrorItem e=new ErrorItem();e.title=o.optString("title");e.description=o.optString("description");e.cause=o.optString("cause");e.solution=o.optString("solution");e.area=o.optString("area","Anfahren");JSONArray a=o.optJSONArray("images");if(a!=null)for(int i=0;i<a.length();i++)e.images.add(a.getString(i));return e;}
        }
        }
-       }
+       
